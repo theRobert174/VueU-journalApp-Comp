@@ -48,6 +48,7 @@ export default {
 
             onSubmit: async() => {
                 const { ok, message } = await loginUser(userForm.value)
+                console.log({ok,message})
                 if(!ok) Swal.fire('Error', message, 'error')
                 else router.push({ name: 'no-entry' })
             }
