@@ -36,9 +36,15 @@
 import { ref } from 'vue'
 import useAuth from '../composables/useAuth'
 
+import Swal from 'sweetalert2'
+import { useRouter } from 'vue-router'
+
 export default {
     setup(){
+        const router = useRouter()
+
         const { createUser } = useAuth()
+
         const userForm = ref({
             name: 'Rodrigo',
             email: 'rodrigo@mail.com',
@@ -47,7 +53,11 @@ export default {
         return{
             userForm,
 
-            onSubmit: async() => {console.log(await createUser(userForm.value))}
+            onSubmit: async() => {
+                const { ok, message } = await createUser(userForm.value)
+                if(!ok) Swal.fire('Error', message, 'error')
+                else router.push({ name: 'no-entry' })
+            }
         }
     }
 }
