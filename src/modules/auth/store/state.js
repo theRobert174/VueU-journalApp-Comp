@@ -1,5 +1,5 @@
 export default () => ({
-    status: 'authenticated',
+    status: 'authenticating',
     user: null,
     idToken: null,
     refreshToken: null
