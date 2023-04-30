@@ -47,7 +47,7 @@ export default {
         return{
             userForm,
 
-            onSubmit: async() => {createUser(userForm.value)}
+            onSubmit: async() => {console.log(await createUser(userForm.value))}
         }
     }
 }
