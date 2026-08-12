@@ -74,14 +74,15 @@ export default {
                 }
             } else {
                 entryData = getEntryById(props.id)
-                console.log(entryData)
                 if(!entryData) return router.push({name: 'no-entry'})
 
                 for(let prop in entryData){
                     entry[prop] = entryData[prop]
                 }
-                console.log(entry)
             }
+
+            localImage.value = null
+            file.value = null
         }
 
         const saveEntry = async() => {
@@ -92,11 +93,9 @@ export default {
             Swal.showLoading()
 
             const pictureData = await uploadImage(file.value)
-            console.log('pictureData',pictureData)
             if(pictureData) entry.picture = pictureData
-            console.log('entry id',entry.id)
+
             if(entry.id){
-                console.log('Guardado ala entry', entry)
                 store.dispatch('journal/updateEntry', entry)
             } else {
                 const resp = await store.dispatch('journal/createEntry', entry)
@@ -104,6 +103,7 @@ export default {
             }
 
             file.value = null
+            localImage.value = null
             Swal.fire('Guardado','Entrada Registrada','success')
         }
 
@@ -150,15 +150,10 @@ export default {
         }
 
         //watchers
-        watch(() => props.id, () => {
-            loadEntry()
-            console.log('el id cambio')
-        })
+        watch(() => props.id, () => loadEntry())
+
         //Life cycle hooks
-        onMounted(() => {
-            loadEntry()
-            console.log({day, month, yearDay, entry})
-        })
+        onMounted(() => loadEntry())
 
         return{
             entry, localImage, 

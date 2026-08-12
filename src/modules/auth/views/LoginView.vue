@@ -1,63 +1,75 @@
 <template>
-    <span class="login100-form-title p-b-41">
-					Ingresar
-    </span>
-    <form @submit.prevent="onSubmit" class="login100-form validate-form p-b-33 p-t-5">
+  <h2 class="h5 text-center text-muted mb-4">Ingresar</h2>
 
-        <div class="wrap-input100 validate-input" data-validate = "Enter username">
-            <input v-model="userForm.email" class="input100" type="mail" placeholder="Correo" required>
-            <span class="focus-input100" data-placeholder="&#xe82a;"></span>
-        </div>
+  <form @submit.prevent="onSubmit" novalidate>
+    <div class="mb-3">
+      <label for="email" class="form-label">Correo</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+        <input
+          id="email"
+          v-model="userForm.email"
+          type="email"
+          class="form-control"
+          placeholder="tu@correo.com"
+          autocomplete="email"
+          required
+        >
+      </div>
+    </div>
 
-        <div class="wrap-input100 validate-input" data-validate="Enter password">
-            <input v-model="userForm.password" class="input100" type="password" placeholder="Contraseña" required>
-            <span class="focus-input100" data-placeholder="&#xe80f;"></span>
-        </div>
+    <div class="mb-4">
+      <label for="password" class="form-label">Contraseña</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+        <input
+          id="password"
+          v-model="userForm.password"
+          type="password"
+          class="form-control"
+          placeholder="••••••••"
+          autocomplete="current-password"
+          required
+        >
+      </div>
+    </div>
 
-        <div class="container-login100-form-btn m-t-32">
-            <button type="submit" class="login100-form-btn">
-                Login
-            </button>
+    <button type="submit" class="btn btn-primary w-100 mb-3">
+      <i class="fa fa-sign-in-alt me-1"></i> Login
+    </button>
 
-        </div>
-
-        <div class="container-login100-form-btn m-t-32">
-            <router-link :to="{name: 'register'}">¿No tienes cuenta?</router-link>
-        </div>
-    </form>
+    <p class="text-center mb-0 small">
+      ¿No tienes cuenta? <router-link :to="{name: 'register'}">Regístrate</router-link>
+    </p>
+  </form>
 </template>
-  
+
 <script>
 import { ref } from 'vue'
-import { useRouter } from "vue-router"
-import useAuth from "../composables/useAuth"
+import { useRouter } from 'vue-router'
+import useAuth from '../composables/useAuth'
 import Swal from 'sweetalert2'
 
 export default {
-    setup() {
-        const router = useRouter()
-        const { loginUser } = useAuth()
+  name: 'LoginView',
+  setup() {
+    const router = useRouter()
+    const { loginUser } = useAuth()
 
-        const userForm = ref({
-            email: '',
-            password: ''
-        })
-        
-        return{
-            userForm,
+    const userForm = ref({
+      email: '',
+      password: ''
+    })
 
-            onSubmit: async() => {
-                const { ok, message } = await loginUser(userForm.value)
-                // console.log({ok,message})
-                if(!ok) Swal.fire('Error', message, 'error')
-                else router.push({ name: 'no-entry' })
-            }
-        }
+    return {
+      userForm,
+
+      onSubmit: async () => {
+        const { ok, message } = await loginUser(userForm.value)
+        if (!ok) Swal.fire('Error', message, 'error')
+        else router.push({ name: 'no-entry' })
+      }
     }
+  }
 }
 </script>
-
-<style lang="scss" scoped>
-    @import '../css/auth.css';
-    @import '../css/util.css';
-</style>

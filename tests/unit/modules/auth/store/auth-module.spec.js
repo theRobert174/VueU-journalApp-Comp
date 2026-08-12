@@ -120,7 +120,7 @@ describe('Vuex: Pruebas en el auth-modules', () => {
         const { idToken } = store.state.auth
 
         //Borrar el usuario
-        const deleteResp = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=AIzaSyAFYM6Py_Yrhof6kTur71t6U6LVtQODIh8` , {
+        const deleteResp = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${process.env.VUE_APP_FIREBASE_API_KEY}` , {
             idToken
         })
         newUser.password = '123456'

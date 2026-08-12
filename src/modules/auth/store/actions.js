@@ -1,13 +1,21 @@
 import authApi from "@/api/authApi"
 
+/**
+ * Extrae un mensaje de error legible de una respuesta fallida de axios.
+ * Evita romper la app cuando el error no trae `response` (por ejemplo,
+ * un fallo de red o de CORS), en cuyo caso `error.response` es undefined.
+ */
+const getErrorMessage = (error) => {
+    return error?.response?.data?.error?.message
+        || 'Ocurrió un error inesperado, intenta de nuevo'
+}
 
 export const createUser = async({commit}, user) => {
     const {name, email, password} = user
-    
+
     try{
         const { data } = await authApi.post(':signUp', {email, password, returnSecureToken: true})
         const { idToken, refreshToken } = data
-
 
         await authApi.post(':update', { displayName: name, idToken })
 
@@ -16,7 +24,7 @@ export const createUser = async({commit}, user) => {
         return { ok: true }
 
     } catch (error) {
-        return { ok: false, message: error.response.data.error.message}
+        return { ok: false, message: getErrorMessage(error) }
     }
 }
 
@@ -35,7 +43,7 @@ export const signInUser = async({commit}, user) => {
         return { ok: true }
 
     } catch (error) {
-        return { ok: false, message: error.response.data.error.message}
+        return { ok: false, message: getErrorMessage(error) }
     }
 }
 
@@ -51,7 +59,6 @@ export const checkAuthentication = async({commit}) => {
 
     try{
         const { data } = await authApi.post(':lookup', {idToken})
-        // console.log(data)
         const { displayName, email } = data.users[0]
 
         const user = {
@@ -64,6 +71,6 @@ export const checkAuthentication = async({commit}) => {
         return{ ok: true }
     } catch(error){
         commit('logout')
-        return { ok: false, message: error.response.data.error.message}
+        return { ok: false, message: getErrorMessage(error) }
     }
 }

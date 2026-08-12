@@ -1,10 +1,5 @@
 import journalApi from "@/api/journalApi"
 
-// export const myAction = async({commit}) => {
-
-
-// }
-
 export const loadEntries = async({commit}) => {
     const {data} = await journalApi.get('/entries.json')
 
@@ -22,19 +17,15 @@ export const loadEntries = async({commit}) => {
     }
     commit('setEntries', entries)
 }
-export const updateEntry = async({commit},entry) => {
-    // console.log(entry, 'action')
+export const updateEntry = async({commit}, entry) => {
     const {id, ...rest} = entry
-    //console.log(rest)
 
-    /*const resp = */await journalApi.put(`/entries/${id}.json`, rest)
-    //console.log('resp',resp)
+    await journalApi.put(`/entries/${id}.json`, rest)
     commit('updateEntry', {...entry})
 }
 export const createEntry = async({commit}, entry) => {
-    
+
     const {data} = await journalApi.post(`/entries.json`,entry)
-    //console.log(data.name)
     const newEntry = {
         id: data.name,
         ...entry

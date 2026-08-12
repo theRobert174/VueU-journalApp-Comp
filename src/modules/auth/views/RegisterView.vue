@@ -1,69 +1,93 @@
 <template>
-    <span class="login100-form-title p-b-41">
-					Registro
-    </span>
-    <form @submit.prevent="onSubmit" class="login100-form validate-form p-b-33 p-t-5">
+  <h2 class="h5 text-center text-muted mb-4">Crear cuenta</h2>
 
-        <div class="wrap-input100 validate-input" data-validate = "Ingrese su nombre">
-            <input v-model="userForm.name" class="input100" type="text" placeholder="Nombre" required>
-            <span class="focus-input100" data-placeholder="&#xe82a;"></span>
-        </div>
+  <form @submit.prevent="onSubmit" novalidate>
+    <div class="mb-3">
+      <label for="name" class="form-label">Nombre</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-user"></i></span>
+        <input
+          id="name"
+          v-model="userForm.name"
+          type="text"
+          class="form-control"
+          placeholder="Tu nombre"
+          autocomplete="name"
+          required
+        >
+      </div>
+    </div>
 
-        <div class="wrap-input100 validate-input" data-validate = "Ingrese correo">
-            <input v-model="userForm.email" class="input100" type="email" placeholder="Correo" required>
-            <span class="focus-input100" data-placeholder="&#xe818;"></span>
-        </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">Correo</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+        <input
+          id="email"
+          v-model="userForm.email"
+          type="email"
+          class="form-control"
+          placeholder="tu@correo.com"
+          autocomplete="email"
+          required
+        >
+      </div>
+    </div>
 
-        <div class="wrap-input100 validate-input" data-validate="Ingrese contraseña">
-            <input v-model="userForm.password" class="input100" type="password" placeholder="Contraseña" required>
-            <span class="focus-input100" data-placeholder="&#xe80f;"></span>
-        </div>
+    <div class="mb-4">
+      <label for="password" class="form-label">Contraseña</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+        <input
+          id="password"
+          v-model="userForm.password"
+          type="password"
+          class="form-control"
+          placeholder="••••••••"
+          autocomplete="new-password"
+          minlength="6"
+          required
+        >
+      </div>
+    </div>
 
-        <div class="container-login100-form-btn m-t-32">
-            <button type="submit" class="login100-form-btn">
-                Crear Cuenta
-            </button>
+    <button type="submit" class="btn btn-primary w-100 mb-3">
+      <i class="fa fa-user-plus me-1"></i> Crear cuenta
+    </button>
 
-        </div>
-
-        <div class="container-login100-form-btn m-t-32">
-            <router-link :to="{name: 'login'}">¿Ya tienes cuenta?</router-link>
-        </div>
-    </form>
+    <p class="text-center mb-0 small">
+      ¿Ya tienes cuenta? <router-link :to="{name: 'login'}">Inicia sesión</router-link>
+    </p>
+  </form>
 </template>
-  
+
 <script>
 import { ref } from 'vue'
 import useAuth from '../composables/useAuth'
-
 import Swal from 'sweetalert2'
 import { useRouter } from 'vue-router'
 
 export default {
-    setup(){
-        const router = useRouter()
+  name: 'RegisterView',
+  setup() {
+    const router = useRouter()
+    const { createUser } = useAuth()
 
-        const { createUser } = useAuth()
+    const userForm = ref({
+      name: '',
+      email: '',
+      password: ''
+    })
 
-        const userForm = ref({
-            name: 'Rodrigo',
-            email: 'rodrigo@mail.com',
-            password: '159487'
-        })
-        return{
-            userForm,
+    return {
+      userForm,
 
-            onSubmit: async() => {
-                const { ok, message } = await createUser(userForm.value)
-                if(!ok) Swal.fire('Error', message, 'error')
-                else router.push({ name: 'no-entry' })
-            }
-        }
+      onSubmit: async () => {
+        const { ok, message } = await createUser(userForm.value)
+        if (!ok) Swal.fire('Error', message, 'error')
+        else router.push({ name: 'no-entry' })
+      }
     }
+  }
 }
 </script>
-
-<style lang="scss" scoped>
-    @import '../css/auth.css';
-    @import '../css/util.css';
-</style>

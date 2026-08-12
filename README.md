@@ -19,11 +19,11 @@ Aplicación de diario/bitácora personal donde cada usuario puede registrarse, i
 
 | Categoría | Tecnología |
 |---|---|
-| Framework | Vue 3 (Options API + Composition API / composables) |
+| Framework | Vue 3 (Composition API vía `setup()`, con composables) |
 | Manejo de estado | Vuex 4, organizado por módulos (`auth`, `journal`) |
 | Ruteo | Vue Router 4 (hash history) |
 | HTTP | Axios |
-| UI | Bootstrap 5, SCSS, Font Awesome, SweetAlert2 |
+| UI | Bootstrap 5, SCSS, Font Awesome 6 (vía CDN), SweetAlert2 |
 | Testing | Jest + Vue Test Utils + `vue-router-mock` |
 | Build | Vue CLI 5 |
 
@@ -51,14 +51,13 @@ src/
 │   │   └── views/
 │   └── daybook/          # Bitácora: listado y edición de entradas
 │       ├── components/
-│       ├── helpers/       # Subida/borrado de imágenes, formateo de fechas
+│       ├── helpers/       # Subida de imágenes, formateo de fechas
 │       ├── layouts/
 │       ├── router/
 │       ├── store/
 │       └── views/
 ├── router/               # Router raíz, combina los routers de cada módulo
-├── store/                # Store raíz, combina los módulos de Vuex
-└── views/                # Home / About
+└── store/                # Store raíz, combina los módulos de Vuex
 ```
 
 ## 🚀 Cómo correrlo localmente
@@ -75,13 +74,22 @@ npm install
 
 ### Configura tus credenciales
 
-Actualmente las credenciales de Firebase y Cloudinary están definidas directamente en:
+Las credenciales de Firebase y Cloudinary se leen desde variables de entorno. Copia el archivo de ejemplo y completa los valores con los de tu propio proyecto:
 
-- [`src/api/authApi.js`](src/api/authApi.js) — API key de Firebase
-- [`src/api/journalApi.js`](src/api/journalApi.js) — URL de la Realtime Database
-- [`src/modules/daybook/helpers/uploadImage.js`](src/modules/daybook/helpers/uploadImage.js) — cloud name y upload preset de Cloudinary
+```bash
+cp .env.example .env.local
+```
 
-Reemplázalas por las de tu propio proyecto antes de correr la app.
+```bash
+# .env.local (nunca se sube a git)
+VUE_APP_FIREBASE_API_KEY=
+VUE_APP_FIREBASE_DB_URL=
+
+VUE_APP_CLOUDINARY_CLOUD_NAME=
+VUE_APP_CLOUDINARY_UPLOAD_PRESET=
+```
+
+`.env.local` está ignorado por git (ver `.gitignore`), así que tus credenciales nunca quedan en el historial.
 
 ### Levantar en modo desarrollo
 
@@ -119,17 +127,18 @@ El proyecto incluye pruebas unitarias con Jest y Vue Test Utils que cubren:
 ## ⚠️ Notas y limitaciones conocidas
 
 - El registro de usuarios es público y sin verificación de email — cualquiera puede crear una cuenta.
-- El *upload preset* de Cloudinary es de tipo *unsigned*, pensado para uso didáctico; en un entorno de producción real debería restringirse (tamaño, formato, carpeta) o reemplazarse por un flujo firmado desde un backend.
-- La función de borrado de imágenes en Cloudinary ([`deleteImage.js`](src/modules/daybook/helpers/deleteImage.js)) no está implementada todavía: las imágenes subidas no se eliminan del storage al borrar una entrada.
-- Las vistas `Home` y `About` son de propósito general / placeholder.
+- El *upload preset* de Cloudinary es de tipo *unsigned* (validado en cliente por tipo y tamaño de archivo como mitigación básica), pensado para uso didáctico; en un entorno de producción real debería reemplazarse por un flujo firmado desde un backend.
+- El borrado de imágenes en Cloudinary al eliminar una entrada **no está implementado a propósito**: hacerlo de forma segura requiere una petición firmada con el API secret de Cloudinary, algo que no se puede exponer en un cliente sin backend. Las imágenes borradas de una entrada quedan huérfanas en el storage.
+- Las credenciales ya viven en variables de entorno (`.env.local`, fuera de git), pero la API key de Firebase usada durante el desarrollo del curso quedó expuesta en commits antiguos del historial — pendiente rotarla en la consola de Firebase.
 
 ## 📌 Roadmap / posibles mejoras
 
-- [ ] Mover las credenciales a variables de entorno (`.env`) en vez de tenerlas hardcodeadas.
-- [ ] Implementar el borrado real de imágenes en Cloudinary al eliminar una entrada.
+- [ ] Rotar la API key de Firebase expuesta en commits antiguos del historial de git.
+- [ ] Reemplazar el *upload preset* unsigned de Cloudinary por un flujo firmado desde un backend (y con eso, implementar el borrado real de imágenes).
 - [ ] Migrar el manejo de estado de Vuex a Pinia.
 - [ ] Agregar paginación o carga incremental de entradas.
 - [ ] Mejorar accesibilidad y diseño responsive.
+- [ ] Reemplazar los tests de integración que pegan contra Firebase real ([`auth-module.spec.js`](tests/unit/modules/auth/store/auth-module.spec.js), [`journal-module.spec.js`](tests/unit/modules/daybook/store/journal/journal-module.spec.js)) por mocks de `authApi`/`journalApi`.
 
 ## 📄 Licencia
 

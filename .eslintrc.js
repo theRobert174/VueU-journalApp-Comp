@@ -15,7 +15,9 @@ module.exports = {
   },
 
   rules: {
-    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    // Solo se permiten console.warn/console.error (diagnóstico intencional);
+    // cualquier console.log suelto se marca siempre, no solo en build de producción.
+    'no-console': ['warn', { allow: ['warn', 'error'] }],
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-unused-vars': process.env.NODE_ENV === 'production' ? 'warn' : 'off'
   },
