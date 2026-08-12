@@ -5,11 +5,13 @@ import daybookRouter from '../modules/daybook/router'
 import authRouter from '../modules/auth/router'
 import isAuthenticatedGuard from '../modules/auth/router/auth-guard'
 
+/**
+ * @type {import('vue-router').RouteRecordRaw[]}
+ */
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
+    redirect: '/auth'
   },
   {
     path: '/about',
