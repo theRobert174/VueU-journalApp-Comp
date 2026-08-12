@@ -39,16 +39,16 @@ export default{
 
 <style lang="scss" scoped>
 .entry-container{
-  border-bottom: 1px solid #2c3e50;
-  transition: 0.2s all ease-in;
+  border-bottom: 1px solid #dee2e6;
+  transition: background-color 0.2s ease-in;
 
   &:hover{
-    background-color: lighten($color: grey, $amount: 45);
-    transition: 0.2s all ease-in;
+    background-color: rgba($color: #2c3e50, $alpha: 0.06);
   }
 
   .entry-description{
     font-size: 12px;
+    color: #6c757d;
   }
 }
 </style>

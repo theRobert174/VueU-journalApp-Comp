@@ -1,24 +1,26 @@
 <template>
     <template v-if="entry">
-        <div class="entry-title d-flex justify-content-between p-2">
-            <div>
-                <span class="text-success fs-3 fw-bold">{{ day }}</span>
-                <span class="mx-1 fs-3">{{month}}</span>
-                <span class="mx-2 fs-4 fw-light">{{yearDay}}</span>
+        <div class="entry-wrapper d-flex flex-column">
+            <div class="entry-title d-flex flex-wrap justify-content-between align-items-center p-2 gap-2">
+                <div>
+                    <span class="text-success fs-3 fw-bold">{{ day }}</span>
+                    <span class="mx-1 fs-3">{{month}}</span>
+                    <span class="mx-2 fs-4 fw-light">{{yearDay}}</span>
+                </div>
+
+                <div>
+                    <input type="file" name="" id="box" @change="onSelectedImage" ref="imageSelector" v-show="false" accept="image/png, image/jpeg, image/jpg">
+                    <button v-if="entry.id" class="btn btn-danger mx-2" @click="onDeleteEntry">Borrar <i class="fa fa-trash-alt"></i></button>
+                    <button class="btn btn-primary" @click="onSelectImage">Subir foto <i class="fa fa-upload"></i></button>
+                </div>
             </div>
-    
-            <div>
-                <input type="file" name="" id="box" @change="onSelectedImage" ref="imageSelector" v-show="false" accept="image/png, image/jpeg, image/jpg">
-                <button v-if="entry.id" class="btn btn-danger mx-2" @click="onDeleteEntry">Borrar <i class="fa fa-trash-alt"></i></button>
-                <button class="btn btn-primary" @click="onSelectImage">Subir foto <i class="fa fa-upload"></i></button>
+            <hr class="mt-0">
+            <div class="d-flex flex-column px-3 flex-grow-1">
+                <textarea placeholder="Que sucedió hoy?" v-model="entry.text"></textarea>
             </div>
         </div>
-        <hr>
-        <div class="d-flex flex-column px-3 h-75">
-            <textarea placeholder="Que sucedió hoy?" v-model="entry.text"></textarea>
-        </div>
-        <img v-if="entry.picture && !localImage" :src="entry.picture" alt="entry-picture" class="img-thumbnail">
-        <img v-if="localImage" :src="localImage" alt="entry-picture" class="img-thumbnail">
+        <img v-if="entry.picture && !localImage" :src="entry.picture" alt="entry-picture" class="img-thumbnail entry-picture">
+        <img v-if="localImage" :src="localImage" alt="entry-picture" class="img-thumbnail entry-picture">
     </template>
     <Fab :icon="'fa-floppy-disk'" @on:click="saveEntry"/>
 </template>
@@ -83,6 +85,7 @@ export default {
 
             localImage.value = null
             file.value = null
+            if(imageSelector.value) imageSelector.value.value = ''
         }
 
         const saveEntry = async() => {
@@ -104,6 +107,7 @@ export default {
 
             file.value = null
             localImage.value = null
+            if(imageSelector.value) imageSelector.value.value = ''
             Swal.fire('Guardado','Entrada Registrada','success')
         }
 
@@ -166,20 +170,30 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.entry-wrapper {
+    height: 100%;
+}
+
 textarea{
     font-size: 20px;
     border: none;
     height: 100%;
+    min-height: 200px;
+    resize: none;
+    width: 100%;
 
     &:focus{
         outline: none;
     }
 }
-img{
-    width: 200px;
+
+.entry-picture{
     position: fixed;
-    bottom: 150px;
+    bottom: 116px;
     right: 20px;
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
     box-shadow: 0px 5px 10px rgba($color: #000000, $alpha: 0.2);
 }
 </style>

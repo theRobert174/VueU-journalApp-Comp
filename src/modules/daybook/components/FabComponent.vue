@@ -17,11 +17,16 @@ export default {
 
 <style lang="scss" scoped>
 button{
+    align-items: center;
     border-radius: 100%;
     bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    display: flex;
     height: 80px;
+    justify-content: center;
     position: fixed;
     right: 20px;
     width: 80px;
+    z-index: 5;
 }
 </style>
